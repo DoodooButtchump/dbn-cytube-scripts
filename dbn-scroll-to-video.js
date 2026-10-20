@@ -5,19 +5,14 @@
     var buttonId = "dbn-scroll-to-video";
 
     function addScrollButton() {
-        if (document.getElementById(buttonId)) {
-            return true;
-        }
+        if (document.getElementById(buttonId)) return true;
 
-        // Find the MOTD container.
         var motd = document.querySelector(
             "#motd, #motdwrap, .motd-container, .motd, " +
             ".motd-rocksalt, .motd-cta-3d"
         );
 
-        if (!motd) {
-            return false;
-        }
+        if (!motd) return false;
 
         var button = document.createElement("button");
         button.id = buttonId;
@@ -43,14 +38,12 @@
             });
         });
 
-        // Place the button before the MOTD's existing content.
         motd.insertBefore(button, motd.firstChild);
         return true;
     }
 
     function start() {
         var attempts = 0;
-
         var timer = window.setInterval(function () {
             attempts++;
 
