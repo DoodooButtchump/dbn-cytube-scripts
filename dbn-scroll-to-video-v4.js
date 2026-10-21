@@ -18,7 +18,7 @@
 
         button.id = buttonId;
         button.type = "button";
-        button.textContent = "SCROLL TO VIDEO";
+        button.textContent = "👇 SCROLL TO VIDEO 👇";
         button.title = "Scroll to center the video player";
 
         // Apply styling directly to the button.
