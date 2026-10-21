@@ -47,7 +47,7 @@
             "border-radius": "30px",
             "box-shadow": "0 0 10px #8b0000, 0 0 24px rgba(220,0,0,0.75), inset 0 0 10px rgba(255,0,0,0.2)",
             "cursor": "pointer",
-            "z-index": "9999",
+            "z-index": "auto",
             "transition": "all 0.2s ease-in-out"
         };
 
