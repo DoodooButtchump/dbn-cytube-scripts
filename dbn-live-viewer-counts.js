@@ -2,19 +2,14 @@
 /* ==========================================================
    DBN LIVE CHANNEL VIEWER COUNTS
    Doodoo Buttchump Network
-   Version 1.1 - Consolidated
+   Version 1.1 - Diagnostic Edition
 
    FEATURES:
-   - Detects all CyTube channel banners in .motd-banners
-   - Retrieves actual viewer counts
-   - Displays counts on hover
-   - Updates counts while connected
-   - Disconnects when mouse leaves
-   - Supports keyboard focus
-   - Supports multiple banner sections
-   - Automatically detects newly added banners
-   - DBN black / blood-red neon styling
-   - Preserves original banner artwork and destinations
+   - Detects CyTube channel banners in .motd-banners
+   - Creates DBN black / blood-red hover overlays
+   - Tests whether the script is loading
+   - Reports how many banner sections and links it finds
+   - Watches for newly added banners
    ========================================================== */
 
 (function () {
@@ -50,31 +45,23 @@
                 position: absolute;
                 inset: 0;
                 z-index: 20;
-
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
                 gap: 7px;
-
                 padding: 8px;
                 box-sizing: border-box;
-
                 background: rgba(0, 0, 0, 0.93);
-
                 border: 2px solid #ff2020;
-
                 box-shadow:
                     inset 0 0 14px rgba(255, 0, 0, 0.4),
                     0 0 12px rgba(255, 0, 0, 0.8);
-
                 opacity: 0;
                 visibility: hidden;
-
                 transition:
                     opacity 0.2s ease,
                     visibility 0.2s ease;
-
                 pointer-events: none;
                 text-align: center;
             }
@@ -93,11 +80,9 @@
                 font-weight: 900;
                 letter-spacing: 1px;
                 text-transform: uppercase;
-
                 text-shadow:
                     0 0 5px #ff0000,
                     0 0 12px #ff0000;
-
                 overflow-wrap: anywhere;
             }
 
@@ -106,7 +91,6 @@
                 font-family: Arial, sans-serif;
                 font-size: clamp(17px, 2vw, 27px);
                 font-weight: 900;
-
                 text-shadow:
                     0 0 5px #ff0000,
                     0 0 15px #ff0000;
@@ -254,7 +238,7 @@
         }
 
         /* ==================================================
-           5. CONNECT AND RETRIEVE REAL VIEWER COUNT
+           5. CONNECT AND RETRIEVE VIEWER COUNT
         ================================================== */
 
         async function connect() {
@@ -334,20 +318,13 @@
                     });
                 });
 
-                /* CyTube's initial permissions event confirms
-                   that the channel join has been accepted. */
-
                 socket.on("setPermissions", function () {
                     if (!validSession()) return;
 
                     showStatus("Connected - retrieving count...");
                 });
 
-                /* Actual live viewer-count event */
-
                 socket.on("usercount", updateCount);
-
-                /* User-list fallback */
 
                 socket.on("userlist", function (users) {
                     if (!validSession()) return;
@@ -407,7 +384,6 @@
 
         link.addEventListener("pointerenter", connect);
         link.addEventListener("pointerleave", disconnect);
-
         link.addEventListener("focusin", connect);
 
         link.addEventListener("focusout", function () {
@@ -416,7 +392,7 @@
     }
 
     /* ======================================================
-       7. SCAN EVERY BANNER SECTION
+       7. SCAN BANNER SECTIONS
     ====================================================== */
 
     function scanBanners() {
@@ -439,12 +415,29 @@
     }
 
     /* ======================================================
-       8. INITIALIZE AND WATCH FOR NEW BANNERS
+       8. INITIALIZE AND RUN DIAGNOSTIC
     ====================================================== */
 
     function initialize() {
         addStyles();
         scanBanners();
+
+        /* TEMPORARY DIAGNOSTIC */
+
+        var containers = document.querySelectorAll(".motd-banners");
+
+        var links = document.querySelectorAll(
+            ".motd-banners a[href*='cytu.be/r/']"
+        );
+
+        alert(
+            "[DBN VIEWER TEST]\n\n" +
+            "Viewer script loaded successfully.\n\n" +
+            "Banner sections found: " + containers.length + "\n" +
+            "CyTube banner links found: " + links.length
+        );
+
+        /* END TEMPORARY DIAGNOSTIC */
 
         const observer = new MutationObserver(function () {
             scanBanners();
