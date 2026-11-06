@@ -1,4 +1,6 @@
 
+alert("[DBN TEST] Version 8 JavaScript has started executing.");
+
 (function () {
     "use strict";
 
