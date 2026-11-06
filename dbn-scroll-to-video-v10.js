@@ -181,7 +181,7 @@
     var script = document.createElement("script");
 
     script.src =
-        "https://cdn.jsdelivr.net/gh/DoodooButchump/dbn-cytube-scripts@main/dbn-live-viewer-counts-v2.js";
+        "https://cdn.jsdelivr.net/gh/DoodooButtchump/dbn-cytube-scripts@main/dbn-live-viewer-counts-v2.js?v=2";
 
     script.async = true;
 
