@@ -2,14 +2,16 @@
 /* ==========================================================
    DBN LIVE CHANNEL VIEWER COUNTS
    Doodoo Buttchump Network
-   Version 1.2 - Enhanced Neon Hover Edition
+   Version 3.0 - Refined Neon Hover Edition
 
    FEATURES:
    - Detects CyTube channel banners in .motd-banners
    - Full-banner black and blood-red hover overlay
-   - Glowing channel name and viewer count
-   - Pulsing LIVE NOW indicator
-   - Smooth fade-in and zoom animation
+   - White channel name with red neon glow
+   - Animated red LIVE NOW indicator
+   - Separate viewer number and VIEWERS label
+   - Responsive banner sizing
+   - Smooth fade-in animation
    - Watches for newly added banners
    - Connects to the channel's CyTube sync server
    ========================================================== */
@@ -17,8 +19,10 @@
 (function () {
     "use strict";
 
-if (window.DBNLiveViewerCountsV2Loaded) return;
-window.DBNLiveViewerCountsV2Loaded = true;
+    /* Prevent duplicate loading */
+
+    if (window.DBNLiveViewerCountsV3Loaded) return;
+    window.DBNLiveViewerCountsV3Loaded = true;
 
     const CONFIG = {
         container: ".motd-banners",
@@ -39,239 +43,272 @@ window.DBNLiveViewerCountsV2Loaded = true;
 
         style.textContent = `
 
-            /* Banner container */
+/* =========================================
+   DBN NEON VIEWER OVERLAY - RED EDITION
+   ========================================= */
 
-            .dbn-viewer-banner {
-                position: relative !important;
-                overflow: hidden !important;
-                isolation: isolate;
-            }
+.dbn-viewer-banner {
+    position: relative !important;
+    overflow: hidden !important;
+    isolation: isolate !important;
+}
 
-            /* Full-banner hover overlay */
+/* Full banner overlay */
 
-            .dbn-viewer-overlay {
-                position: absolute !important;
-                inset: 0 !important;
-                z-index: 20 !important;
+.dbn-viewer-overlay {
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 999 !important;
 
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
 
-                gap: 8px;
-                padding: 8px;
-                box-sizing: border-box;
+    gap: 6px !important;
+    padding: 8px !important;
+    box-sizing: border-box !important;
 
-                background:
-                    linear-gradient(
-                        135deg,
-                        rgba(0, 0, 0, 0.97),
-                        rgba(20, 0, 0, 0.96),
-                        rgba(0, 0, 0, 0.97)
-                    );
+    background: rgba(0, 0, 0, 0.91) !important;
 
-                border: 3px solid #ff1010;
+    border: 2px solid #ff1717 !important;
+    border-radius: 5px !important;
 
-                box-shadow:
-                    inset 0 0 18px rgba(255, 0, 0, 0.45),
-                    inset 0 0 35px rgba(255, 0, 0, 0.16),
-                    0 0 10px rgba(255, 0, 0, 0.95),
-                    0 0 22px rgba(255, 0, 0, 0.75),
-                    0 0 38px rgba(255, 0, 0, 0.35);
+    box-shadow:
+        inset 0 0 15px rgba(255, 0, 0, 0.25),
+        0 0 8px rgba(255, 0, 0, 0.9),
+        0 0 18px rgba(255, 0, 0, 0.5) !important;
 
-                opacity: 0;
-                visibility: hidden;
+    opacity: 0 !important;
+    visibility: hidden !important;
 
-                transform: scale(1.045);
+    transform: scale(0.97);
 
-                transition:
-                    opacity 0.28s ease,
-                    visibility 0.28s ease,
-                    transform 0.28s ease;
+    transition:
+        opacity 0.25s ease,
+        visibility 0.25s ease,
+        transform 0.25s ease !important;
 
-                pointer-events: none;
-                text-align: center;
-            }
+    pointer-events: none !important;
+    text-align: center !important;
+}
 
-            /* Show overlay when hovering or keyboard focusing */
+/* Reveal overlay */
 
-            .dbn-viewer-banner:hover .dbn-viewer-overlay,
-            .dbn-viewer-banner:focus-visible .dbn-viewer-overlay,
-            .dbn-viewer-banner:focus-within .dbn-viewer-overlay {
+.dbn-viewer-banner:hover .dbn-viewer-overlay,
+.dbn-viewer-banner:focus-visible .dbn-viewer-overlay,
+.dbn-viewer-banner:focus-within .dbn-viewer-overlay {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: scale(1) !important;
+}
 
-                opacity: 1;
-                visibility: visible;
-                transform: scale(1);
-            }
+/* Channel name */
 
-            /* Channel name */
+.dbn-viewer-name {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
 
-            .dbn-viewer-name {
-                color: #ffffff;
+    color: #ffffff !important;
 
-                font-family: Arial, sans-serif;
-                font-size: clamp(11px, 1.3vw, 18px);
-                font-weight: 900;
+    font-family: Arial, sans-serif !important;
+    font-size: clamp(11px, 3vw, 17px) !important;
+    font-weight: 900 !important;
 
-                letter-spacing: 1.5px;
-                line-height: 1.25;
+    letter-spacing: 1px !important;
+    line-height: 1.2 !important;
 
-                text-transform: uppercase;
-                overflow-wrap: anywhere;
+    text-align: center !important;
+    text-transform: uppercase !important;
 
-                text-shadow:
-                    0 0 4px #ffffff,
-                    0 0 8px #ff0000,
-                    0 0 16px #ff0000,
-                    0 0 25px rgba(255, 0, 0, 0.9);
-            }
+    overflow-wrap: anywhere !important;
+    word-break: normal !important;
 
-            /* LIVE NOW indicator */
+    text-shadow:
+        0 0 4px #ffffff,
+        0 0 8px #ff0000,
+        0 0 15px #ff0000 !important;
+}
 
-            .dbn-viewer-live {
-                display: none;
-                align-items: center;
-                justify-content: center;
-                gap: 6px;
+/* LIVE NOW */
 
-                color: #ff3030;
+.dbn-viewer-live {
+    display: none;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
 
-                font-family: Arial, sans-serif;
-                font-size: 10px;
-                font-weight: 900;
+    color: #ff2525 !important;
 
-                letter-spacing: 2px;
-                text-transform: uppercase;
+    font-family: Arial, sans-serif !important;
+    font-size: 10px !important;
+    font-weight: 900 !important;
 
-                text-shadow:
-                    0 0 5px #ff0000,
-                    0 0 12px #ff0000;
-            }
+    letter-spacing: 2px !important;
+    line-height: 1.2 !important;
+    text-transform: uppercase !important;
 
-            /* Pulsing red live dot */
+    text-shadow:
+        0 0 5px #ff0000,
+        0 0 12px #ff0000 !important;
+}
 
-            .dbn-viewer-live-dot {
-                width: 8px;
-                height: 8px;
-                min-width: 8px;
+/* Animated LIVE dot */
 
-                display: inline-block;
-                border-radius: 50%;
+.dbn-viewer-live-dot {
+    display: inline-block !important;
 
-                background: #ff1010;
+    width: 7px !important;
+    height: 7px !important;
+    min-width: 7px !important;
 
-                box-shadow:
-                    0 0 5px #ff0000,
-                    0 0 12px #ff0000,
-                    0 0 20px #ff0000;
+    border-radius: 50% !important;
+    background: #ff1010 !important;
 
-                animation: dbn-live-pulse 1.1s infinite;
-            }
+    box-shadow:
+        0 0 5px #ff0000,
+        0 0 12px #ff0000 !important;
 
-            @keyframes dbn-live-pulse {
-                0% {
-                    opacity: 1;
-                    transform: scale(1);
-                    box-shadow: 0 0 5px #ff0000, 0 0 12px #ff0000;
-                }
+    animation: dbn-live-pulse 1.1s infinite !important;
+}
 
-                50% {
-                    opacity: 0.55;
-                    transform: scale(0.78);
-                    box-shadow: 0 0 2px #ff0000, 0 0 6px #ff0000;
-                }
+@keyframes dbn-live-pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
 
-                100% {
-                    opacity: 1;
-                    transform: scale(1);
-                    box-shadow: 0 0 5px #ff0000, 0 0 12px #ff0000;
-                }
-            }
+    50% {
+        opacity: 0.5;
+        transform: scale(0.8);
+    }
+}
 
-            /* Viewer count */
+/* Viewer count container */
 
-            .dbn-viewer-count {
-                color: #ff2525;
+.dbn-viewer-count {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
 
-                font-family: Arial, sans-serif;
-                font-size: clamp(17px, 2.2vw, 30px);
-                font-weight: 900;
+    gap: 0 !important;
+    width: 100% !important;
 
-                line-height: 1.1;
-                letter-spacing: 1px;
+    color: #ffffff !important;
 
-                text-shadow:
-                    0 0 5px #ff0000,
-                    0 0 10px #ff0000,
-                    0 0 20px #ff0000,
-                    0 0 32px rgba(255, 0, 0, 0.9);
-            }
+    font-family: Arial, sans-serif !important;
+    text-align: center !important;
+    line-height: 1 !important;
 
-            /* Connection and viewer status */
+    text-shadow: none !important;
+}
 
-            .dbn-viewer-status {
-                color: #eeeeee;
+/* Actual viewer number */
 
-                font-family: Arial, sans-serif;
-                font-size: 9px;
-                font-weight: bold;
+.dbn-viewer-number {
+    display: block !important;
 
-                letter-spacing: 1.5px;
-                text-transform: uppercase;
+    color: #ffffff !important;
 
-                text-shadow:
-                    0 0 5px rgba(255, 255, 255, 0.6);
-            }
+    font-family: Arial, sans-serif !important;
+    font-size: clamp(23px, 4vw, 34px) !important;
+    font-weight: 900 !important;
 
-            /* Smaller banner support */
+    line-height: 1.05 !important;
 
-            @media (max-width: 600px) {
+    text-shadow:
+        0 0 5px #ffffff,
+        0 0 12px #ff0000,
+        0 0 22px #ff0000 !important;
+}
 
-                .dbn-viewer-overlay {
-                    gap: 5px;
-                    padding: 4px;
-                    border-width: 2px;
-                }
+/* VIEWERS label */
 
-                .dbn-viewer-name {
-                    font-size: clamp(9px, 2.5vw, 14px);
-                    letter-spacing: 0.8px;
-                }
+.dbn-viewer-label {
+    display: block !important;
 
-                .dbn-viewer-live {
-                    font-size: 8px;
-                    letter-spacing: 1px;
-                }
+    color: #ff3030 !important;
 
-                .dbn-viewer-live-dot {
-                    width: 6px;
-                    height: 6px;
-                    min-width: 6px;
-                }
+    font-family: Arial, sans-serif !important;
+    font-size: 10px !important;
+    font-weight: 900 !important;
 
-                .dbn-viewer-count {
-                    font-size: clamp(14px, 4vw, 22px);
-                }
+    letter-spacing: 2px !important;
+    line-height: 1.4 !important;
 
-                .dbn-viewer-status {
-                    font-size: 7px;
-                    letter-spacing: 0.5px;
-                }
-            }
+    text-transform: uppercase !important;
 
-            /* Respect reduced-motion preferences */
+    text-shadow:
+        0 0 5px #ff0000,
+        0 0 10px #ff0000 !important;
+}
 
-            @media (prefers-reduced-motion: reduce) {
-                .dbn-viewer-overlay {
-                    transition: none;
-                }
+/* Status */
 
-                .dbn-viewer-live-dot {
-                    animation: none;
-                }
-            }
-        `;
+.dbn-viewer-status {
+    color: #ffffff !important;
+
+    font-family: Arial, sans-serif !important;
+    font-size: 8px !important;
+    font-weight: bold !important;
+
+    letter-spacing: 1px !important;
+    line-height: 1.2 !important;
+
+    text-align: center !important;
+    text-transform: uppercase !important;
+
+    text-shadow: 0 0 5px rgba(255,255,255,0.5) !important;
+}
+
+/* Smaller banners */
+
+@media (max-width: 600px) {
+
+    .dbn-viewer-overlay {
+        gap: 4px !important;
+        padding: 5px !important;
+        border-width: 1.5px !important;
+    }
+
+    .dbn-viewer-name {
+        font-size: clamp(10px, 3vw, 14px) !important;
+        letter-spacing: 0.5px !important;
+    }
+
+    .dbn-viewer-live {
+        font-size: 8px !important;
+        letter-spacing: 1px !important;
+    }
+
+    .dbn-viewer-number {
+        font-size: clamp(20px, 5vw, 27px) !important;
+    }
+
+    .dbn-viewer-label {
+        font-size: 9px !important;
+    }
+
+    .dbn-viewer-status {
+        font-size: 7px !important;
+    }
+}
+
+/* Reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+    .dbn-viewer-overlay {
+        transition: none !important;
+    }
+
+    .dbn-viewer-live-dot {
+        animation: none !important;
+    }
+}
+
+`;
 
         document.head.appendChild(style);
     }
@@ -280,43 +317,42 @@ window.DBNLiveViewerCountsV2Loaded = true;
        2. IDENTIFY CYTUBE CHANNEL FROM BANNER LINK
     ====================================================== */
 
+    function getChannelName(link) {
+        try {
+            const rawHref = link.getAttribute("href");
 
-function getChannelName(link) {
-    try {
-        const rawHref = link.getAttribute("href");
+            if (!rawHref) return null;
 
-        if (!rawHref) return null;
+            let channel = rawHref.trim();
 
-        let channel = rawHref.trim();
+            /* Full CyTube channel URLs */
 
-        // Support full CyTube channel URLs.
-        const fullURL = channel.match(
-            /^https?:\/\/(?:www\.)?cytu\.be\/r\/([^/?#]+)/i
-        );
+            const fullURL = channel.match(
+                /^https?:\/\/(?:www\.)?cytu\.be\/r\/([^/?#]+)/i
+            );
 
-        if (fullURL) {
-            return decodeURIComponent(fullURL[1]);
-        }
+            if (fullURL) {
+                return decodeURIComponent(fullURL[1]);
+            }
 
-        // Support relative channel links such as "SlasherTV".
-        channel = channel.replace(/^\/+/, "");
+            /* Relative channel links */
 
-        // Ignore external URLs, anchors, and other paths.
-        if (
-            channel.includes("://") ||
-            channel.startsWith("#") ||
-            channel.includes("/")
-        ) {
+            channel = channel.replace(/^\/+/, "");
+
+            if (
+                channel.includes("://") ||
+                channel.startsWith("#") ||
+                channel.includes("/")
+            ) {
+                return null;
+            }
+
+            return decodeURIComponent(channel);
+
+        } catch (error) {
             return null;
         }
-
-        return decodeURIComponent(channel);
-
-    } catch (error) {
-        return null;
     }
-}
-
 
     /* ======================================================
        3. CREATE HOVER OVERLAY
@@ -350,11 +386,20 @@ function getChannelName(link) {
 
         live.append(liveDot, liveText);
 
-        /* Viewer count */
+        /* Viewer number and label */
 
         const count = document.createElement("div");
         count.className = "dbn-viewer-count";
-        count.textContent = "--";
+
+        const countNumber = document.createElement("span");
+        countNumber.className = "dbn-viewer-number";
+        countNumber.textContent = "--";
+
+        const countLabel = document.createElement("span");
+        countLabel.className = "dbn-viewer-label";
+        countLabel.textContent = "VIEWERS";
+
+        count.append(countNumber, countLabel);
 
         /* Status */
 
@@ -375,15 +420,19 @@ function getChannelName(link) {
         function showCount(number) {
             if (!Number.isFinite(number) || number < 0) return;
 
-            count.textContent =
-                number + (number === 1 ? " VIEWER" : " VIEWERS");
+            countNumber.textContent = number;
+
+            countLabel.textContent =
+                number === 1 ? "VIEWER" : "VIEWERS";
 
             live.style.display = "flex";
             status.textContent = "Currently in chat";
         }
 
         function showStatus(message) {
-            count.textContent = "--";
+            countNumber.textContent = "--";
+            countLabel.textContent = "VIEWERS";
+
             live.style.display = "none";
             status.textContent = message;
         }
@@ -617,8 +666,6 @@ function getChannelName(link) {
         addStyles();
         scanBanners();
 
-        /* Watch for banners added after initial page load */
-
         const observer = new MutationObserver(function () {
             scanBanners();
         });
@@ -629,7 +676,7 @@ function getChannelName(link) {
         });
 
         console.log(
-            "[DBN] Live channel viewer counts initialized."
+            "[DBN V3] Live channel viewer counts initialized."
         );
     }
 
