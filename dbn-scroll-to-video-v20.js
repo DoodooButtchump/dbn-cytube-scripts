@@ -188,7 +188,7 @@
     }
 
     /* ======================================================
-       LOAD VIEWER COUNTS VERSION 12
+       LOAD VIEWER COUNTS VERSION 14
        ====================================================== */
 
     if (!document.querySelector(
@@ -197,7 +197,7 @@
         var viewerScript = document.createElement("script");
 
         viewerScript.src =
-            "https://cdn.jsdelivr.net/gh/DoodooButtchump/dbn-cytube-scripts@main/dbn-live-viewer-counts-v13.js";
+            "https://cdn.jsdelivr.net/gh/DoodooButtchump/dbn-cytube-scripts@main/dbn-live-viewer-counts-v14.js";
 
         viewerScript.setAttribute(
             "data-dbn-live-viewers",
