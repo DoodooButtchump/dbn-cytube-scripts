@@ -1,7 +1,12 @@
 
 /* ==================================================
-   DBN SCROLL TO VIDEO
-   Clean Version - Diagnostic Popups Removed
+   DBN SCROLL TO VIDEO + LIVE VIEWER COUNTS
+   Clean Version 11
+   ================================================== */
+
+
+/* ==================================================
+   PART 1: SCROLL TO VIDEO BUTTON
    ================================================== */
 
 (function () {
@@ -69,11 +74,13 @@
                 "linear-gradient(180deg, #d00000, #650000)",
                 "important"
             );
+
             button.style.setProperty(
                 "border-color",
                 "#ff3333",
                 "important"
             );
+
             button.style.setProperty(
                 "box-shadow",
                 "0 4.5px 0 #280000, 0 6px 10px rgba(255,0,0,0.45), inset 0 1.5px 2px rgba(255,255,255,0.3)",
@@ -87,11 +94,13 @@
                 "linear-gradient(180deg, #b00000 0%, #780000 45%, #3a0000 100%)",
                 "important"
             );
+
             button.style.setProperty(
                 "border-color",
                 "#d42a2a",
                 "important"
             );
+
             button.style.setProperty(
                 "box-shadow",
                 "0 4.5px 0 #280000, 0 6px 10px rgba(0,0,0,0.65), inset 0 1.5px 2px rgba(255,255,255,0.3)",
@@ -148,66 +157,35 @@
 
 
 /* ==================================================
-   DBN LIVE VIEWER COUNTS LOADER
-   Clean Version - No Diagnostic Popups
+   PART 2: LIVE VIEWER COUNTS LOADER
    ================================================== */
 
 (function () {
     "use strict";
 
-    /* Prevent duplicate loading */
+    if (window.DBNViewerLoaderV11Started) return;
 
-
-
-
-
-
-
-
-
-/* ==================================================
-   DBN V10 VIEWER-COUNT SCRIPT LOADER
-   Loads the new independent viewer-count file
-   ================================================== */
-
-(function () {
-
-    if (window.DBNViewerLoaderV10Started) {
-        return;
-    }
-
-    window.DBNViewerLoaderV10Started = true;
+    window.DBNViewerLoaderV11Started = true;
 
     var script = document.createElement("script");
 
     script.src =
-        "https://cdn.jsdelivr.net/gh/DoodooButtchump/dbn-cytube-scripts@main/dbn-live-viewer-counts-v2.js?v=2";
+        "https://cdn.jsdelivr.net/gh/DoodooButtchump/dbn-cytube-scripts@main/dbn-live-viewer-counts-v2.js?v=3";
 
     script.async = true;
 
     script.onload = function () {
         console.log(
-            "[DBN V10] New viewer-count script loaded successfully."
+            "[DBN V11] Viewer-count script loaded."
         );
     };
 
     script.onerror = function () {
         console.error(
-            "[DBN V10] New viewer-count script failed to load."
+            "[DBN V11] Viewer-count script failed to load."
         );
     };
 
     document.head.appendChild(script);
-
-})();
-
-
-
-
-
-
-
-
-  
 
 })();
