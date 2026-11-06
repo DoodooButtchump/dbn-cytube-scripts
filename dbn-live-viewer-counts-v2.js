@@ -280,25 +280,43 @@ window.DBNLiveViewerCountsV2Loaded = true;
        2. IDENTIFY CYTUBE CHANNEL FROM BANNER LINK
     ====================================================== */
 
-    function getChannelName(link) {
-        try {
-            const url = new URL(link.href, location.href);
 
-            if (
-                url.hostname !== "cytu.be" &&
-                url.hostname !== "www.cytu.be"
-            ) {
-                return null;
-            }
+function getChannelName(link) {
+    try {
+        const rawHref = link.getAttribute("href");
 
-            const match = url.pathname.match(/^\/r\/([^/]+)/i);
+        if (!rawHref) return null;
 
-            return match ? decodeURIComponent(match[1]) : null;
+        let channel = rawHref.trim();
 
-        } catch (error) {
+        // Support full CyTube channel URLs.
+        const fullURL = channel.match(
+            /^https?:\/\/(?:www\.)?cytu\.be\/r\/([^/?#]+)/i
+        );
+
+        if (fullURL) {
+            return decodeURIComponent(fullURL[1]);
+        }
+
+        // Support relative channel links such as "SlasherTV".
+        channel = channel.replace(/^\/+/, "");
+
+        // Ignore external URLs, anchors, and other paths.
+        if (
+            channel.includes("://") ||
+            channel.startsWith("#") ||
+            channel.includes("/")
+        ) {
             return null;
         }
+
+        return decodeURIComponent(channel);
+
+    } catch (error) {
+        return null;
     }
+}
+
 
     /* ======================================================
        3. CREATE HOVER OVERLAY
