@@ -145,30 +145,57 @@
 
 
 
+
 /* ==================================================
    DBN LIVE VIEWER COUNTS LOADER
-   Loads the separate viewer-count script
+   Diagnostic Version 2
    ================================================== */
 
 (function () {
-    if (document.querySelector(
-        'script[data-dbn-live-viewers]'
-    )) {
+    "use strict";
+
+    console.log("[DBN] Viewer loader is executing.");
+
+    /* Prevent duplicate loading */
+    if (window.DBNViewerLoaderStarted) {
+        console.log("[DBN] Viewer loader already started.");
         return;
     }
+
+    window.DBNViewerLoaderStarted = true;
+
+    /* Confirm that the loader itself is running */
+    alert(
+        "[DBN TEST 1]\n\n" +
+        "The viewer-count loader is executing inside v8."
+    );
 
     var script = document.createElement("script");
 
     script.src =
-        "https://cdn.jsdelivr.net/gh/DoodooButtchump/dbn-cytube-scripts@main/dbn-live-viewer-counts.js";
+        "https://cdn.jsdelivr.net/gh/DoodooButtchump/dbn-cytube-scripts@main/dbn-live-viewer-counts.js?v=2";
 
     script.async = true;
 
-    script.dataset.dbnLiveViewers = "true";
+    script.onload = function () {
+        console.log(
+            "[DBN] Viewer-count JavaScript loaded successfully."
+        );
+
+        alert(
+            "[DBN TEST 2]\n\n" +
+            "The viewer-count JavaScript file loaded successfully."
+        );
+    };
 
     script.onerror = function () {
         console.error(
-            "[DBN] Could not load live viewer counts."
+            "[DBN] Viewer-count JavaScript failed to load."
+        );
+
+        alert(
+            "[DBN ERROR]\n\n" +
+            "The viewer-count JavaScript file could not be loaded."
         );
     };
 
