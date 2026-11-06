@@ -197,7 +197,7 @@
         var viewerScript = document.createElement("script");
 
         viewerScript.src =
-            "https://cdn.jsdelivr.net/gh/DoodooButtchump/dbn-cytube-scripts@main/dbn-live-viewer-counts-v8.js";
+            "https://cdn.jsdelivr.net/gh/DoodooButtchump/dbn-cytube-scripts@main/dbn-live-viewer-counts-v9.js";
 
         viewerScript.setAttribute(
             "data-dbn-live-viewers",
