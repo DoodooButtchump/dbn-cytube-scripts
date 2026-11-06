@@ -140,3 +140,38 @@
         start();
     }
 })();
+
+
+
+
+
+/* ==================================================
+   DBN LIVE VIEWER COUNTS LOADER
+   Loads the separate viewer-count script
+   ================================================== */
+
+(function () {
+    if (document.querySelector(
+        'script[data-dbn-live-viewers]'
+    )) {
+        return;
+    }
+
+    var script = document.createElement("script");
+
+    script.src =
+        "https://cdn.jsdelivr.net/gh/DoodooButtchump/dbn-cytube-scripts@main/dbn-live-viewer-counts.js";
+
+    script.async = true;
+
+    script.dataset.dbnLiveViewers = "true";
+
+    script.onerror = function () {
+        console.error(
+            "[DBN] Could not load live viewer counts."
+        );
+    };
+
+    document.head.appendChild(script);
+
+})();
