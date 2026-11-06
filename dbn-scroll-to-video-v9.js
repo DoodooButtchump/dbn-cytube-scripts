@@ -1,7 +1,8 @@
-alert("[DBN TEST] VERSION 9 IS EXECUTING!");
 
-
-alert("[DBN TEST] Version 8 JavaScript has started executing.");
+/* ==================================================
+   DBN SCROLL TO VIDEO
+   Clean Version - Diagnostic Popups Removed
+   ================================================== */
 
 (function () {
     "use strict";
@@ -25,7 +26,6 @@ alert("[DBN TEST] Version 8 JavaScript has started executing.");
         button.textContent = "👇 SCROLL TO VIDEO 👇";
         button.title = "Scroll to center the video player";
 
-        // 25% smaller than the original v5 dimensions.
         var styles = {
             "display": "block",
             "visibility": "visible",
@@ -143,41 +143,32 @@ alert("[DBN TEST] Version 8 JavaScript has started executing.");
     } else {
         start();
     }
+
 })();
-
-
-
-
 
 
 /* ==================================================
    DBN LIVE VIEWER COUNTS LOADER
-   Diagnostic Version 2
+   Clean Version - No Diagnostic Popups
    ================================================== */
 
 (function () {
     "use strict";
 
-    console.log("[DBN] Viewer loader is executing.");
-
     /* Prevent duplicate loading */
+
     if (window.DBNViewerLoaderStarted) {
-        console.log("[DBN] Viewer loader already started.");
         return;
     }
 
     window.DBNViewerLoaderStarted = true;
 
-    /* Confirm that the loader itself is running */
-    alert(
-        "[DBN TEST 1]\n\n" +
-        "The viewer-count loader is executing inside v8."
-    );
-
     var script = document.createElement("script");
 
+    /* Version 3 forces a fresh viewer-script request */
+
     script.src =
-        "https://cdn.jsdelivr.net/gh/DoodooButtchump/dbn-cytube-scripts@main/dbn-live-viewer-counts.js?v=2";
+        "https://cdn.jsdelivr.net/gh/DoodooButtchump/dbn-cytube-scripts@main/dbn-live-viewer-counts.js?v=3";
 
     script.async = true;
 
@@ -185,21 +176,11 @@ alert("[DBN TEST] Version 8 JavaScript has started executing.");
         console.log(
             "[DBN] Viewer-count JavaScript loaded successfully."
         );
-
-        alert(
-            "[DBN TEST 2]\n\n" +
-            "The viewer-count JavaScript file loaded successfully."
-        );
     };
 
     script.onerror = function () {
         console.error(
             "[DBN] Viewer-count JavaScript failed to load."
-        );
-
-        alert(
-            "[DBN ERROR]\n\n" +
-            "The viewer-count JavaScript file could not be loaded."
         );
     };
 
