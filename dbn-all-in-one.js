@@ -70,15 +70,16 @@
     z-index: 999 !important;
     display: grid !important;
     grid-template-rows:
-        minmax(0, 0.9fr)
         auto
-        minmax(0, 1.15fr)
-        minmax(0, 0.9fr)
-        auto !important;
+        auto
+        auto
+        auto
+        minmax(0, 1fr) !important;
     align-items: center !important;
+    align-content: space-between !important;
     justify-items: center !important;
-    gap: 3px !important;
-    padding: 5px 8px !important;
+    gap: 2px !important;
+    padding: 3px 6px !important;
     overflow: hidden !important;
     background: rgba(0, 0, 0, 0.95) !important;
     border: 2px solid #ff1717 !important;
@@ -123,7 +124,7 @@
     min-height: 0 !important;
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
-    font-size: clamp(10px, 1.5vw, 17px) !important;
+    font-size: clamp(8px, 1.05vw, 13px) !important;
     font-weight: 900 !important;
     letter-spacing: 0.7px !important;
     line-height: 1.1 !important;
@@ -148,7 +149,7 @@
     min-width: 0 !important;
     color: #ff2525 !important;
     -webkit-text-fill-color: #ff2525 !important;
-    font-size: clamp(9px, 1.1vw, 12px) !important;
+    font-size: clamp(7px, 0.75vw, 9px) !important;
     font-weight: 900 !important;
     letter-spacing: 1.5px !important;
     line-height: 1.1 !important;
@@ -209,7 +210,7 @@
     min-width: 0 !important;
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
-    font-size: clamp(18px, 2.4vw, 30px) !important;
+    font-size: clamp(13px, 1.5vw, 19px) !important;
     font-weight: 900 !important;
     line-height: 1 !important;
     white-space: nowrap !important;
@@ -225,7 +226,7 @@
     max-width: 100% !important;
     color: #ff3030 !important;
     -webkit-text-fill-color: #ff3030 !important;
-    font-size: clamp(8px, 1vw, 11px) !important;
+    font-size: clamp(6px, 0.7vw, 8px) !important;
     font-weight: 900 !important;
     letter-spacing: 1.5px !important;
     line-height: 1.1 !important;
@@ -256,7 +257,7 @@
     width: 100% !important;
     color: #ff3030 !important;
     -webkit-text-fill-color: #ff3030 !important;
-    font-size: clamp(7px, 0.85vw, 9px) !important;
+    font-size: clamp(6px, 0.65vw, 8px) !important;
     font-weight: 900 !important;
     letter-spacing: 1.2px !important;
     line-height: 1 !important;
@@ -270,7 +271,7 @@
     min-width: 0 !important;
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
-    font-size: clamp(7px, 0.95vw, 10px) !important;
+    font-size: clamp(6px, 0.7vw, 8px) !important;
     font-weight: 700 !important;
     letter-spacing: 0.2px !important;
     line-height: 1.15 !important;
@@ -286,7 +287,7 @@
 
 .motd-banners a.dbn-viewer-banner-v6 .dbn-viewer-status-v6 {
     display: block !important;
-    margin-top: 5px !important;
+    margin-top: 0 !important;
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
@@ -311,18 +312,18 @@
 @media (max-width: 600px) {
 
     .motd-banners a.dbn-viewer-banner-v6 .dbn-viewer-overlay-v6 {
-        gap: 2px !important;
-        padding: 3px 5px !important;
+        gap: 1px !important;
+        padding: 2px 4px !important;
         border-width: 1.5px !important;
     }
 
     .motd-banners a.dbn-viewer-banner-v6 .dbn-viewer-name-v6 {
-        font-size: clamp(9px, 2.5vw, 14px) !important;
+        font-size: clamp(7px, 2vw, 11px) !important;
         letter-spacing: 0.3px !important;
     }
 
     .motd-banners a.dbn-viewer-banner-v6 .dbn-viewer-live-v6 {
-        font-size: 8px !important;
+        font-size: 6px !important;
         letter-spacing: 1px !important;
     }
 
@@ -334,7 +335,7 @@
     }
 
     .motd-banners a.dbn-viewer-banner-v6 .dbn-viewer-number-v6 {
-        font-size: clamp(16px, 4vw, 25px) !important;
+        font-size: clamp(12px, 3.2vw, 17px) !important;
     }
 
     .motd-banners a.dbn-viewer-banner-v6 .dbn-viewer-label-v6 {
