@@ -1914,8 +1914,12 @@
         name.style.removeProperty("--dbn-name-overflow-v17");
         name.style.removeProperty("--dbn-name-duration-v17");
 
-        var available = name.clientWidth;
-        if (!available) return;
+        var computedName = window.getComputedStyle(name);
+        var horizontalPadding =
+            (parseFloat(computedName.paddingLeft) || 0) +
+            (parseFloat(computedName.paddingRight) || 0);
+        var available = name.clientWidth - horizontalPadding;
+        if (available <= 0) return;
 
         var fullWidth = Math.ceil(text.getBoundingClientRect().width);
         var overflow = fullWidth - available;
