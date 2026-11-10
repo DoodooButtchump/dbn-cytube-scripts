@@ -1764,6 +1764,9 @@
     scrollbar-width: none !important;
     cursor: default !important;
 }
+.motd-banners a.dbn-viewer-banner-v6 .dbn-viewer-name-v6.dbn-channel-name-overflow-v22 {
+    justify-content: flex-start !important;
+}
 .motd-banners a.dbn-viewer-banner-v6 .dbn-viewer-name-v6 > .dbn-channel-name-text-v21 {
     display: inline-block !important;
     flex: 0 0 auto !important;
@@ -1801,7 +1804,10 @@
             animation.cancel();
             animations.delete(parts.text);
         }
-        if (parts) parts.text.style.transform = "translateX(0px)";
+        if (parts) {
+            parts.text.style.transform = "translateX(0px)";
+            parts.name.classList.remove("dbn-channel-name-overflow-v22");
+        }
         if (currentBanner === banner) currentBanner = null;
     }
 
@@ -1824,15 +1830,15 @@
                 var overflow = fullWidth - available;
 
                 if (available <= 0 || overflow <= 3) {
-                    name.style.justifyContent = "center";
+                    name.classList.remove("dbn-channel-name-overflow-v22");
                     text.style.transform = "translateX(0px)";
                     return;
                 }
 
-                // Align the oversized text to the viewport's left edge.
-                // Without this, flex centering clips the first characters.
-                name.style.justifyContent = "flex-start";
-
+                // Left-align the overflowing flex child before animating.
+                // Otherwise justify-content:center offsets its starting edge
+                // by half the overflow and clips the first character.
+                name.classList.add("dbn-channel-name-overflow-v22");
                 var distance = Math.ceil(overflow + 4);
                 var duration = Math.max(5000, Math.min(18000, 4500 + distance * 35));
                 var animation = text.animate(
