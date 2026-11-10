@@ -736,6 +736,28 @@
                         // showing a count received from the usercount event.
                         if (source === "usercount" && !initializedFromUserList) {
                             pendingUserCount = number;
+
+                            // Start (or restart) the fallback grace period from
+                            // the first count event, even if it arrives late.
+                            if (!initialListTimer) {
+                                initialListTimer = setTimeout(function () {
+                                    initialListTimer = null;
+
+                                    if (
+                                        isCurrent() &&
+                                        !initializedFromUserList &&
+                                        pendingUserCount !== null &&
+                                        !failed
+                                    ) {
+                                        receivedCount = true;
+                                        clearTimeout(state.timer);
+                                        clearTimeout(state.retryTimer);
+                                        state.retryTimer = null;
+                                        showCount(pendingUserCount);
+                                    }
+                                }, 1800);
+                            }
+
                             return;
                         }
 
@@ -765,6 +787,8 @@
                         // baseline. If it does not arrive, allow a usercount
                         // event to serve as a fallback after 3.5 seconds.
                         initialListTimer = setTimeout(function () {
+                            initialListTimer = null;
+
                             if (
                                 isCurrent() &&
                                 !initializedFromUserList &&
