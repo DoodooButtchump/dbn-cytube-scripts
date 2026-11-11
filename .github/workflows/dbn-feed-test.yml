@@ -1,0 +1,34 @@
+
+name: DBN Feed Connection Test
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-cloudflare:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send test programming update
+        env:
+          DBN_TOKEN: ${{ secrets.DBN_UPDATE_TOKEN }}
+        run: |
+          if [ -z "$DBN_TOKEN" ]; then
+            echo "ERROR: DBN_UPDATE_TOKEN is missing."
+            exit 1
+          fi
+
+          curl --fail-with-body \
+            --silent --show-error \
+            --max-time 30 \
+            --request POST \
+            --url "https://dbn-live-guide.thaliquorman.workers.dev/update" \
+            --header "Authorization: Bearer ${DBN_TOKEN}" \
+            --header "Content-Type: application/json" \
+            --data '{"channel_name":"doodootest","video_title":"TEST FROM GITHUB ACTIONS - NOT LIVE"}'
+
+          echo ""
+          echo "Cloudflare update request completed."
