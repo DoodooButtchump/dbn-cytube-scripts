@@ -13,12 +13,11 @@ on:
           - Anthology-Horror
           - 24-7-Comedy
 
-  schedule:
-    # Anthology Horror twice per hour
-    - cron: '7,37 * * * *'
 
-    # 24-7 Comedy twice per hour, staggered
-    - cron: '22,52 * * * *'
+schedule:
+  - cron: '11,41 * * * *'
+  - cron: '26,56 * * * *'
+
 
 permissions:
   contents: read
@@ -34,7 +33,8 @@ jobs:
 
     env:
       DBN_TOKEN: ${{ secrets.DBN_UPDATE_TOKEN }}
-      DBN_CHANNEL: ${{ github.event_name == 'workflow_dispatch' && inputs.channel || (github.event.schedule == '7,37 * * * *' && 'Anthology-Horror' || '24-7-Comedy') }}
+     
+DBN_CHANNEL: ${{ github.event_name == 'workflow_dispatch' && inputs.channel || (github.event.schedule == '11,41 * * * *' && 'Anthology-Horror' || '24-7-Comedy') }}
 
     steps:
       - name: Install CyTube socket client
