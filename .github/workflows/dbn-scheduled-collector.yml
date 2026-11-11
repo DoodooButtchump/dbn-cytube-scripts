@@ -1,0 +1,276 @@
+
+name: DBN Scheduled Live Collector
+
+on:
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: "Channel to check manually"
+        required: true
+        type: choice
+        default: Anthology-Horror
+        options:
+          - Anthology-Horror
+          - 24-7-Comedy
+
+  schedule:
+    # Anthology Horror twice per hour
+    - cron: '7,37 * * * *'
+
+    # 24-7 Comedy twice per hour, staggered
+    - cron: '22,52 * * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dbn-scheduled-live-collector
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+
+    env:
+      DBN_TOKEN: ${{ secrets.DBN_UPDATE_TOKEN }}
+      DBN_CHANNEL: ${{ github.event_name == 'workflow_dispatch' && inputs.channel || (github.event.schedule == '7,37 * * * *' && 'Anthology-Horror' || '24-7-Comedy') }}
+
+    steps:
+      - name: Install CyTube socket client
+        run: npm install --no-save --no-package-lock --ignore-scripts socket.io-client@4
+
+      - name: Collect one channel and update Cloudflare
+        run: |
+          node <<'NODE'
+          const { io } = require('socket.io-client');
+
+          const room = process.env.DBN_CHANNEL;
+          const token = process.env.DBN_TOKEN;
+
+          const endpoint =
+            'https://dbn-live-guide.thaliquorman.workers.dev/update';
+
+          if (!token) {
+            throw new Error('Missing DBN_UPDATE_TOKEN GitHub secret');
+          }
+
+          if (!['Anthology-Horror', '24-7-Comedy'].includes(room)) {
+            throw new Error('Unrecognized channel: ' + room);
+          }
+
+          function readTitle(data) {
+            if (typeof data === 'string') {
+              return data.trim();
+            }
+
+            if (!data || typeof data !== 'object') {
+              return '';
+            }
+
+            if (typeof data.title === 'string') {
+              return data.title.trim();
+            }
+
+            if (data.media &&
+                typeof data.media.title === 'string') {
+              return data.media.title.trim();
+            }
+
+            return '';
+          }
+
+          async function collectTitle() {
+
+            const configResponse = await fetch(
+              'https://cytu.be/socketconfig/' +
+              encodeURIComponent(room) + '.json',
+              {
+                signal: AbortSignal.timeout(12000)
+              }
+            );
+
+            if (configResponse.status === 429) {
+              throw new Error(
+                'CyTube rate limit (HTTP 429); stopping without retry'
+              );
+            }
+
+            if (!configResponse.ok) {
+              throw new Error(
+                'CyTube room configuration HTTP ' +
+                configResponse.status
+              );
+            }
+
+            const config = await configResponse.json();
+
+            const server = (config.servers || []).find(
+              s => s.secure && s.url
+            );
+
+            if (!server) {
+              throw new Error(
+                'No secure CyTube socket server available'
+              );
+            }
+
+            return new Promise((resolve, reject) => {
+
+              const socket = io(server.url, {
+                transports: ['websocket'],
+                forceNew: true,
+                reconnection: false,
+                autoConnect: false,
+                timeout: 12000
+              });
+
+              let completed = false;
+              let playlist = [];
+              let currentUid = null;
+
+              const timer = setTimeout(() => {
+                finish(
+                  new Error(
+                    'Current video not confirmed within 20 seconds'
+                  )
+                );
+              }, 20000);
+
+              function finish(error, title) {
+                if (completed) return;
+
+                completed = true;
+                clearTimeout(timer);
+
+                socket.removeAllListeners();
+                socket.disconnect();
+
+                if (error) {
+                  reject(error);
+                } else {
+                  resolve(title);
+                }
+              }
+
+              function checkPlaylist() {
+                if (currentUid === null) return;
+
+                const entry = playlist.find(
+                  item =>
+                    String(item.uid) ===
+                    String(currentUid)
+                );
+
+                const title = entry &&
+                  readTitle(entry.media || entry);
+
+                if (title) {
+                  finish(null, title);
+                }
+              }
+
+              socket.on('connect', () => {
+                socket.emit('joinChannel', {
+                  name: room
+                });
+              });
+
+              socket.on('changeMedia', media => {
+                const title = readTitle(media);
+
+                if (title) {
+                  finish(null, title);
+                }
+              });
+
+              socket.on('playlist', data => {
+                playlist = Array.isArray(data)
+                  ? data
+                  : Array.isArray(data && data.items)
+                    ? data.items
+                    : [];
+
+                checkPlaylist();
+              });
+
+              socket.on('setCurrent', data => {
+                currentUid =
+                  data && typeof data === 'object'
+                    ? data.uid
+                    : data;
+
+                checkPlaylist();
+              });
+
+              socket.on('needPassword', () => {
+                finish(new Error('Room requires password'));
+              });
+
+              socket.on('connect_error', error => {
+                finish(
+                  new Error(
+                    'CyTube socket failed: ' +
+                    (error.message || error)
+                  )
+                );
+              });
+
+              socket.on('disconnect', reason => {
+                finish(
+                  new Error(
+                    'CyTube socket disconnected: ' +
+                    reason
+                  )
+                );
+              });
+
+              socket.connect();
+            });
+          }
+
+          async function main() {
+
+            console.log('Checking one room:', room);
+
+            const title = await collectTitle();
+
+            console.log(
+              'Confirmed current title:',
+              title
+            );
+
+            const response = await fetch(endpoint, {
+              method: 'POST',
+
+              headers: {
+                Authorization: 'Bearer ' + token,
+                'Content-Type': 'application/json'
+              },
+
+              body: JSON.stringify({
+                channel_name: room,
+                video_title: title.slice(0, 500)
+              }),
+
+              signal: AbortSignal.timeout(15000)
+            });
+
+            if (!response.ok) {
+              throw new Error(
+                'Cloudflare update HTTP ' +
+                response.status
+              );
+            }
+
+            console.log(
+              'Cloudflare record updated for',
+              room
+            );
+          }
+
+          main().catch(error => {
+            console.error(error.message);
+            process.exitCode = 1;
+          });
+          NODE
