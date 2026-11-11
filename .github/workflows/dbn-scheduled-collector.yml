@@ -14,10 +14,6 @@ on:
           - Anthology-Horror
           - 24-7-Comedy
 
-  schedule:
-    - cron: '11,41 * * * *'
-    - cron: '26,56 * * * *'
-
 permissions:
   contents: read
 
