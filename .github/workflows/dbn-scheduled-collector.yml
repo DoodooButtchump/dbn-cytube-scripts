@@ -31,14 +31,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 3
 
+
     env:
       DBN_TOKEN: ${{ secrets.DBN_UPDATE_TOKEN }}
-     
-DBN_CHANNEL: ${{ github.event_name == 'workflow_dispatch' && inputs.channel || (github.event.schedule == '11,41 * * * *' && 'Anthology-Horror' || '24-7-Comedy') }}
+      DBN_CHANNEL: ${{ github.event_name == 'workflow_dispatch' && inputs.channel || (github.event.schedule == '11,41 * * * *' && 'Anthology-Horror' || '24-7-Comedy') }}
 
     steps:
       - name: Install CyTube socket client
         run: npm install --no-save --no-package-lock --ignore-scripts socket.io-client@4
+
 
       - name: Collect one channel and update Cloudflare
         run: |
