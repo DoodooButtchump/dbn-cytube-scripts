@@ -14,6 +14,7 @@ on:
           - Anthology-Horror
           - 24-7-Comedy
           - Non-Stop-Action
+          - Gore-and-More
 
 
 permissions:
@@ -53,7 +54,7 @@ jobs:
             throw new Error('Missing DBN_UPDATE_TOKEN GitHub secret');
           }
 
-          if (!['Anthology-Horror', '24-7-Comedy', 'Non-Stop-Action'].includes(room)) {
+          if (!['Anthology-Horror', '24-7-Comedy', 'Non-Stop-Action', 'Gore-and-More'].includes(room)) {
             throw new Error('Unrecognized channel: ' + room);
           }
 
