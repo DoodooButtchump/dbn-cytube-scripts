@@ -16,6 +16,7 @@ on:
           - Non-Stop-Action
           - Gore-and-More
           - Ed-Wood
+          - So-Bad-They-Are-Good
 
 
 permissions:
@@ -55,7 +56,7 @@ jobs:
             throw new Error('Missing DBN_UPDATE_TOKEN GitHub secret');
           }
 
-          if (!['Anthology-Horror', '24-7-Comedy', 'Non-Stop-Action', 'Gore-and-More', 'Ed-Wood'].includes(room)) {
+          if (!['Anthology-Horror', '24-7-Comedy', 'Non-Stop-Action', 'Gore-and-More', 'Ed-Wood', 'So-Bad-They-Are-Good'].includes(room)) {
             throw new Error('Unrecognized channel: ' + room);
           }
 
