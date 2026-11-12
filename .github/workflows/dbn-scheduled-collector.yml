@@ -6,17 +6,10 @@ on:
   workflow_dispatch:
     inputs:
       channel:
-        description: "Channel to check manually"
+        description: "CyTube room name from its URL"
         required: true
-        type: choice
+        type: string
         default: Anthology-Horror
-        options:
-          - Anthology-Horror
-          - 24-7-Comedy
-          - Non-Stop-Action
-          - Gore-and-More
-          - Ed-Wood
-          - So-Bad-They-Are-Good
 
 
 permissions:
@@ -56,7 +49,7 @@ jobs:
             throw new Error('Missing DBN_UPDATE_TOKEN GitHub secret');
           }
 
-          if (!['Anthology-Horror', '24-7-Comedy', 'Non-Stop-Action', 'Gore-and-More', 'Ed-Wood', 'So-Bad-They-Are-Good'].includes(room)) {
+          if (!/^[A-Za-z0-9_-]{1,80}$/.test(room)) {
             throw new Error('Unrecognized channel: ' + room);
           }
 
