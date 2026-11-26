@@ -4904,7 +4904,7 @@
                     " | EXPECTED=" + (expectedUid ? expectedUid + " [" + (expectedItem ? expectedItem.title : "not queued") + "]" : "none"));
             }
         }
-        window.prompt("DBN V83 READ-ONLY QUEUE DIAGNOSTIC — press Ctrl+A, then Ctrl+C to copy:", lines.join("\\n"));
+        window.prompt("DBN V83 READ-ONLY QUEUE DIAGNOSTIC — press Ctrl+A, then Ctrl+C to copy:", lines.join("\n"));
     }
 
     function renderPlan(p) {
