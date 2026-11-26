@@ -5045,8 +5045,11 @@
             batch.forEach(function (move) {
                 window.socket.emit("moveMedia", { from: move.from, after: move.after });
             });
-            var completed = Math.min(offset + batch.length, desired.length);
-            status("Shuffle progress: " + completed + " of " + desired.length + " queue positions sent • verifying batch " +
+            // Some desired items already occupy the correct position and
+            // therefore generate no move row. Check through the last item
+            // actually moved in this batch, not the raw number of requests.
+            var completed = desired.indexOf(String(batch[batch.length - 1].uid)) + 1;
+            status("Shuffle progress: " + completed + " of " + desired.length + " queue positions reached • verifying batch " +
                 (Math.floor(offset / batchSize) + 1) + " of " + Math.ceil(rows.length / batchSize));
             var confirmedBatch = await waitForPrefix(desired.slice(0, completed), expectedCurrent);
             if (!confirmedBatch) {
