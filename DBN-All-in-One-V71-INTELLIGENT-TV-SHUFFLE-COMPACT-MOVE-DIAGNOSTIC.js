@@ -5015,7 +5015,7 @@
         var checksPassed = invalidFrom === 0 && invalidAfter === 0;
         var summary = "DIAGNOSTIC ONLY — V71 completed local simulation of " +
             totalMoves + " moveMedia request(s).\n" +
-            "NO socket requests were sent; the live queue was not changed.\n\n" +
+            "NO moveMedia socket requests were sent; the live queue was not changed.\n\n" +
             "Planned queue entries: " + desired.length + "\n" +
             "Invalid from values: " + invalidFrom + "\n" +
             "Invalid after values (excluding \"prepend\"): " + invalidAfter + "\n" +
@@ -5029,7 +5029,7 @@
                 checksPassed ? "\n\nAll " + totalMoves + " simulated moves completed successfully." :
                 "\n\nSimulation completed, but one or more payload values failed validation.");
 
-        console.info("[DBN V71 COMPACT MOVE DIAGNOSTIC — NO NETWORK]", {
+        console.info("[DBN V71 COMPACT MOVE DIAGNOSTIC — NO QUEUE MOVES]", {
             totalMoves: totalMoves,
             plannedEntries: desired.length,
             invalidFrom: invalidFrom,
