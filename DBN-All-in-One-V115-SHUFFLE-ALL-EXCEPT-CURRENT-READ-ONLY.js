@@ -5072,7 +5072,7 @@
             }
             var fullTarget = movableTarget.slice();
             fullTarget.splice(liveCurrentIndex, 0, String(current));
-            var moves = buildMovePlan(liveOrder, fullTarget, current);
+            var moves = buildMovePlanProtectingCurrent(liveOrder, fullTarget, current);
             var serverSet = new Set(serverOrder);
             var liveSet = new Set(liveOrder);
             var targetSet = new Set(fullTarget);
@@ -5322,6 +5322,44 @@
             anchor=uid;
         }
         if (simulated.some(function(uid,index){return uid!==target[index];})) throw new Error("The simulated move plan did not produce the complete proposed order. No moves were sent.");
+        return moves;
+    }
+
+    function buildMovePlanProtectingCurrent(initialOrder, targetOrder, protectedUid) {
+        var initial = initialOrder.map(String), target = targetOrder.map(String), fixed = String(protectedUid);
+        if (initial.length !== target.length) throw new Error("The current queue and proposed order contain different numbers of entries.");
+        if (new Set(initial).size !== initial.length || new Set(target).size !== target.length) throw new Error("Duplicate UIDs were detected. No queue moves were planned.");
+        if (initial.filter(function(uid){return uid===fixed;}).length !== 1 ||
+            target.filter(function(uid){return uid===fixed;}).length !== 1) {
+            throw new Error("The protected current UID must appear exactly once in both orders.");
+        }
+        var available = new Set(initial);
+        for (var i=0;i<target.length;i++) if(!available.has(target[i])) throw new Error("The proposed order contains a UID that is not in the live queue: "+target[i]);
+        var simulated=initial.slice(), moves=[], anchor="prepend";
+        for(var j=0;j<target.length;j++){
+            var uid=target[j];
+            if(uid===fixed){ anchor=fixed; continue; }
+            var fromIndex=simulated.indexOf(uid);
+            var anchorIndex=anchor==="prepend"?-1:simulated.indexOf(String(anchor));
+            var alreadyPlaced=anchor==="prepend"?fromIndex===0:
+                fromIndex>=0&&anchorIndex>=0&&fromIndex===anchorIndex+1;
+            if(!alreadyPlaced){
+                var fromNumber=Number(uid),afterNumber=anchor==="prepend"?"prepend":Number(anchor);
+                if(!Number.isSafeInteger(fromNumber)||(afterNumber!=="prepend"&&!Number.isSafeInteger(afterNumber))) throw new Error("A queue UID is not a safe numeric CyTube UID. No moves were sent.");
+                if(fromIndex<0)throw new Error("The move planner could not find UID "+uid+".");
+                moves.push({uid:uid,from:fromNumber,after:afterNumber});
+                simulated.splice(fromIndex,1);
+                if(anchor==="prepend")simulated.unshift(uid);
+                else {
+                    anchorIndex=simulated.indexOf(String(anchor));
+                    if(anchorIndex<0)throw new Error("The move planner lost protected/current anchor UID "+anchor+".");
+                    simulated.splice(anchorIndex+1,0,uid);
+                }
+            }
+            anchor=uid;
+        }
+        if(simulated.some(function(uid,index){return uid!==target[index];})) throw new Error("The protected-current move plan did not produce the complete proposed order. No moves were sent.");
+        if(moves.some(function(move){return String(move.uid)===fixed;})) throw new Error("Safety check failed: the current video appeared as a moved item.");
         return moves;
     }
 
