@@ -5063,7 +5063,7 @@
                     if(!data||data.from===undefined||data.after===undefined)return;
                     if(!expected){unexpected={from:String(data.from),after:String(data.after)};finish("extra-server-move");return;}
                     if(String(data.from)===String(expected.from)&&String(data.after)===String(expected.after)){
-                        received++;status(operationLabel+" batch "+batchNumber+"/"+batchCount+" • server confirmed "+received+"/"+batch.length);
+                        received++;progressStatus("batch "+batchNumber+"/"+batchCount+" • server confirmed "+received+"/"+batch.length);
                         if(received===batch.length)finish("confirmed");return;
                     }
                     unexpected={expected:{from:expected.from,after:expected.after},received:{from:String(data.from),after:String(data.after)}};
