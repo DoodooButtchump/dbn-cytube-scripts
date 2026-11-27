@@ -5290,9 +5290,9 @@
                 var actionQueue=window.PL_ACTION_QUEUE||null;
                 if(actionQueue&&(actionQueue._lock||(actionQueue._q&&actionQueue._q.length)))throw new Error("CyTube's browser playlist action queue was busy before batch "+failedBatch+".");
                 var expectedAfter=simulate(expectedLive,batch);
-                if(expectedAfter.indexOf(current)!==currentIndex||
+                if(expectedAfter.indexOf(current)<0||
                    batch.some(function(m){return String(m.uid)===current;})){
-                    throw new Error("Safety check failed: the active video would be moved or would not remain at its protected index.");
+                    throw new Error("Safety check failed: the active video is missing from the simulated queue or appears as a move source.");
                 }
                 status("Shuffle batch "+failedBatch+"/"+batchCount+" • sending "+batch.length+" requests");
                 var received=0,unexpected=null,timer=null,handler=null;
