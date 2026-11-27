@@ -4877,7 +4877,7 @@
         list.innerHTML = "";
         var intro = document.createElement("div");
         intro.style.cssText = "padding:4px 2px 9px;color:#c9aaaa;font-size:11px";
-        intro.textContent = "V110 PREVIEW ONLY — nothing has changed. The currently playing video is excluded. Programs are shuffled while preserving episode order within each show and spacing shows apart where possible. Commercials are shuffled and spread across program breaks; if counts do not balance, every video is still included and the distribution is relaxed as evenly as possible. Auto-detection treats titles containing commercial (including common misspellings) as commercials, and videos shorter than 5 minutes as commercials; use each row selector to override AUTO, PROGRAM, or COMMERCIAL. Live shuffle execution remains disabled in this preview build.";
+        intro.textContent = "V110 REVIEW PREVIEW — nothing has changed yet. The currently playing video is excluded. Programs are shuffled while preserving episode order within each show and spacing shows apart where possible. Commercials are shuffled and spread across program breaks; if counts do not balance, every video is still included and the distribution is relaxed as evenly as possible. Auto-detection treats titles containing commercial (including common misspellings) as commercials, and videos shorter than 5 minutes as commercials; use each row selector to override AUTO, PROGRAM, or COMMERCIAL. Live shuffle begins only after you explicitly choose APPLY and confirm the warning dialog.";
         list.appendChild(intro);
         p.order.forEach(function (item, index) {
             var row = document.createElement("div");
