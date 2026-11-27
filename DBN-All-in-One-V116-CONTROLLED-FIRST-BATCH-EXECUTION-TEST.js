@@ -5210,7 +5210,7 @@
             "Total planned requests: "+moves.length,
             "Current playing UID: "+current,
             "Current video move source: never",
-            "The current video must remain at playlist index "+fresh.currentIndex+".",
+            "The current video is never a move source; other moves may temporarily change its numeric queue index.",
             "A full original-order checkpoint and target order will be saved first.",
             "All 10 server confirmations and the complete browser queue will be checked.",
             "If any check fails, execution stops. No retries and no later batches.",
@@ -5258,9 +5258,9 @@
         try {
             if(jqueryFx) jqueryFx.off=true;
             var expectedAfter=simulateBatch(live,batch);
-            if(expectedAfter.indexOf(current)!==fresh.currentIndex ||
+            if(expectedAfter.indexOf(current)<0 ||
                batch.some(function(m){return String(m.uid)===current;})) {
-                throw new Error("Preflight safety check failed: the first batch would move the active video or change its final index. No requests were sent.");
+                throw new Error("Preflight safety check failed: the active video is missing or appears as a move source. No requests were sent.");
             }
             var serverResult=await new Promise(function(resolve){
                 var settled=false;
@@ -5301,8 +5301,8 @@
                 },100);
             });
             if(domResult!=="confirmed") throw new Error("All "+batch.length+" server confirmations arrived, but complete queue verification failed: "+domResult+". No later batches were sent.");
-            if(currentUid()!==current || fullQueueOrder().map(String).indexOf(current)!==fresh.currentIndex) {
-                throw new Error("Final active-video identity or position verification failed. No later batches were sent.");
+            if(currentUid()!==current || fullQueueOrder().map(String).indexOf(current)<0) {
+                throw new Error("Final active-video identity verification failed. No later batches were sent.");
             }
             var report=[
                 "DBN V116 FIRST-BATCH EXECUTION TEST SUCCEEDED",
@@ -5312,6 +5312,7 @@
                 "Complete browser queue verified: true",
                 "Current playing UID: "+current,
                 "Current video original/final index: "+fresh.currentIndex+" / "+fullQueueOrder().map(String).indexOf(current),
+                "Current video remained the active playback UID: true",
                 "Current video used as move source: false",
                 "Total planned requests remaining after test: "+(moves.length-batch.length),
                 "Original full-queue checkpoint saved: true",
