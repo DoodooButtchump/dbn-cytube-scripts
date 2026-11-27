@@ -4476,6 +4476,7 @@
     var applying = false;
     var undoSnapshot = null;
     var diagnosticRunning = false;
+    var v127OneMoveMode = false;
 
     function channelName() {
         return window.CHANNEL && CHANNEL.name
@@ -5236,6 +5237,7 @@
     async function runV127OneMoveSocketDiagnostic() {
         if (applying || diagnosticRunning) return;
         if (!window.confirm("V127 ONE-MOVE SOCKET DIAGNOSTIC\n\nThis sends EXACTLY ONE moveMedia request from the saved shuffle target, then stops. The single move may change the live playlist by one position. The original V116 checkpoint remains saved. No second move will be sent.\n\nRun this one-move test?")) return;
+        v127OneMoveMode = true;
         runFullShuffleFromCheckpoint();
     }
 
@@ -5323,14 +5325,14 @@
             alert("The saved target order is already complete. No move requests were needed.");
             status("Shuffle already complete • full queue matches target");return;
         }
-        var batchSize=1,batchCount=Math.ceil(moves.length/batchSize);
+        var batchSize=v127OneMoveMode?1:10,batchCount=Math.ceil(moves.length/batchSize);
         var warning=plan&&plan.warning?plan.warning:"";
         var confirmation=[
             "CONTINUE DBN BROADCAST SHUFFLE",
             "",
             "Live playlist entries: "+live.length,
             "Move requests remaining: "+moves.length,
-            "Batches of up to 10: "+batchCount,
+            (v127OneMoveMode?"Diagnostic batches of exactly 1 move: ":"Batches of up to 10: ")+batchCount,
             "Currently playing UID: "+current,
             "Its current index: "+currentIndex,
             "The active video will never be used as a move source.",
@@ -5498,7 +5500,7 @@
                     throw new Error("Could not update the saved continuation checkpoint after batch "+failedBatch+". Stopping before another batch.");
                 }
                 progress();
-                if(verified===1)throw new Error("V127 ONE-MOVE SOCKET DIAGNOSTIC COMPLETE — stopped intentionally after the first independently verified move. No second move was sent.");
+                if(v127OneMoveMode&&verified===1)throw new Error("V127 ONE-MOVE SOCKET DIAGNOSTIC COMPLETE — stopped intentionally after the first independently verified move. No second move was sent.");
             }
             if(String(currentUid())!==current||!exactOrderMatches(fullQueueOrder().map(String),target)){
                 throw new Error("Final active-video or complete-queue verification failed.");
@@ -5547,7 +5549,7 @@
         }finally{
             v127TraceHandlers.forEach(function(item){try{if(item.eventName==="__onAny"&&typeof item.target.offAny==="function")item.target.offAny(item.handler);else if(item.eventName==="__onAnyOutgoing"&&typeof item.target.offAnyOutgoing==="function")item.target.offAnyOutgoing(item.handler);else if(typeof item.target.off==="function")item.target.off(item.eventName,item.handler);else if(typeof item.target.removeListener==="function")item.target.removeListener(item.eventName,item.handler);}catch(e){}});
             if(jqueryFx)jqueryFx.off=oldFx;
-            applying=false;diagnosticRunning=false;
+            applying=false;diagnosticRunning=false;v127OneMoveMode=false;
             if(applyButton){
                 applyButton.disabled=false;
                 applyButton.textContent="CONTINUE FULL SHUFFLE FROM CHECKPOINT";
