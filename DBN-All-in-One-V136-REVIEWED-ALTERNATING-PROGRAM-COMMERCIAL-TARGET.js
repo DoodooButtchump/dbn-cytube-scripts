@@ -5303,6 +5303,15 @@
             return;
         }
 
+        // Preserve the previous resumable target before replacing it with
+        // the newly reviewed V136 target. The original V116 checkpoint is untouched.
+        var previousPending = getStore(pendingKey);
+        var backupKey = pendingKey + ":pre-v136-backup";
+        if (previousPending && !setStore(backupKey, previousPending)) {
+            alert("Could not preserve the previous pending target. No target was replaced and no moves were sent.");
+            return;
+        }
+
         var pending = {
             targetOrder: fullTarget,
             currentUid: current,
