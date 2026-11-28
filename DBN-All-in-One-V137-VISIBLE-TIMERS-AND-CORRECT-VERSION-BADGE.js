@@ -4460,7 +4460,7 @@
 (function () {
     "use strict";
     if (window.DBNIntelligentBroadcastShuffleV137Loaded) return;
-    window.DBNIntelligentBroadcastShuffleV136Loaded = true;
+    window.DBNIntelligentBroadcastShuffleV137Loaded = true;
 
     var C = {
         button: "dbn-broadcast-shuffle-button-v1",
